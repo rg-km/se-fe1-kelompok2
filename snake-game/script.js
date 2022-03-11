@@ -86,6 +86,28 @@ function draw() {
 
     drawScore(snake1);
 
+    // custom head Snake
+    let imgHeadSnake = document.getElementById("headSnake");
+    ctx.drawImage(
+      imgHeadSnake,
+      snake1.head.x * CELL_SIZE,
+      snake1.head.y * CELL_SIZE,
+      CELL_SIZE,
+      CELL_SIZE
+    );
+
+    // custom body Snake
+    let imgBodySnake = document.getElementById("bodySnake");
+    for (let i = 1; i < snake1.body.length; i++) {
+      ctx.drawImage(
+        imgBodySnake,
+        snake1.body[i].x * CELL_SIZE,
+        snake1.body[i].y * CELL_SIZE,
+        CELL_SIZE,
+        CELL_SIZE
+      );
+    }
+
     // custom apple
     let img = document.getElementById("apple");
     drawCell(ctx, apple.position.x, apple.position.y, apple.color);
