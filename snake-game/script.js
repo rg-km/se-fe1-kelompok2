@@ -86,7 +86,24 @@ function draw() {
 
     drawScore(snake1);
 
+    // custom apple
+    let img = document.getElementById("apple");
     drawCell(ctx, apple.position.x, apple.position.y, apple.color);
+
+    ctx.drawImage(
+      img,
+      apple.position.x * CELL_SIZE,
+      apple.position.y * CELL_SIZE,
+      CELL_SIZE,
+      CELL_SIZE
+    );
+    ctx.drawImage(
+      img,
+      apple2.position.x * CELL_SIZE,
+      apple2.position.y * CELL_SIZE,
+      CELL_SIZE,
+      CELL_SIZE
+    );
   }, REDRAW_INTERVAL);
 }
 
