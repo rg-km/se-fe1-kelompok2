@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        padding: 0;
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      h1 {
+        text-align: center;
+        font-size: 30px;
+        color: #333;
+      }
+      h4 {
+        margin-top: 15px;
+        text-align: center;
+        color: #333;
+      }
+    </style>
+    <title>Project Akhir - Snake Game with JS</title>
+  </head>
+  <body onload="draw();">
+    <h1>Snake Game by Kelompok 2</h1>
+    <img
+      id="apple"
+      src="assets/apple.png"
+      style="display: none"
+      alt=""
+      width="20"
+      height="20"
+    />
+
+    <img
+      id="headSnake"
+      src="assets/head-snake.jpg"
+      style="display: none"
+      alt=""
+      width="20"
+      height="20"
+    />
+
+    <img
+      id="bodySnake"
+      src="assets/body-snake.png"
+      style="display: none"
+      alt=""
+      width="20"
+      height="20"
+    />
+
+    <canvas
+      id="snakeBoard"
+      width="400"
+      height="400"
+      style="border: 1px solid #000000"
+    ></canvas>
+
+    <h4>Level 1</h4>
+
+    <canvas
+      id="score1Board"
+      width="70"
+      height="70"
+      style="border: 1px solid #000000"
+    ></canvas>
+
+    <!-- javascript -->
+    <script type="text/javascript" src="index-basic.js"></script>
+  </body>
+</html>
