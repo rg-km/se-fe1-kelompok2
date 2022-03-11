@@ -14,19 +14,24 @@
         justify-content: center;
         align-items: center;
       }
-      h1 {
+      .title {
+        width: 400px;
+        display: flex;
+        justify-content: space-between;
         text-align: center;
-        font-size: 30px;
+        font-size: 1em;
+        color: #333;
+      }
+      .speed {
+        width: 400px;
+      }
+      .speed h3 {
+        float: right;
+        margin-bottom: 0px;
         color: #333;
       }
       h4 {
-        margin-top: 15px;
-        text-align: center;
-        color: #333;
-      }
-      h5 {
-        margin-top: -10px;
-        font-size: 0.75em;
+        margin-bottom: 5px;
         text-align: center;
         color: #333;
       }
@@ -34,7 +39,10 @@
     <title>Project Akhir - Snake Game with JS</title>
   </head>
   <body onload="draw();">
-    <h1>Snake Game by Kelompok 2</h1>
+    <div class="title">
+      <h1>Snake Game</h1>
+      <h1 id="levelNumber">Level: 1</h1>
+    </div>
 
     <img
       id="apple"
@@ -70,8 +78,11 @@
       style="border: 1px solid #000000"
     ></canvas>
 
-    <h4>Level 1</h4>
-    <h5>Kecepatan 150</h5>
+    <div class="speed">
+      <h3 id="speedNumber">Speed: 150</h3>
+    </div>
+
+    <h4>Score</h4>
 
     <canvas
       id="score1Board"
