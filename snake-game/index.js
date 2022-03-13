@@ -45,7 +45,7 @@ function initSnake (sorce, bdn) {
   }
 }
 let snake1 = initSnake(
-  'assets/head-snake.jpg',
+  'assets/head-snake.png',
   'assets/body-snake.png'
 )
 
@@ -79,7 +79,7 @@ function drawUlar (ctx, x, y, sorce) {
 }
 function drawlipe (ctx, x, y,stat) {
   const image = new Image()
-  image.src = "assets/blood.png"
+  image.src = "assets/heart.png"
   if(stat == true){     
       ctx.drawImage(image, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE)
   }
@@ -306,14 +306,14 @@ for(let i = 0; i <= 5; i++){
     alert('Game over')
 
     snake1 = initSnake(
-        'assets/head-snake.jpg',
+        'assets/head-snake.png',
         'assets/body-snake.png'
       )
       return isCollide
   }else if(isWin){
     alert('Selamat Anda Menang')
     snake1 = initSnake(
-        'assets/head-snake.jpg',
+        'assets/head-snake.png',
         'assets/body-snake.png'
       )
     return isWin
