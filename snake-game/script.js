@@ -1,5 +1,7 @@
 const CELL_SIZE = 20;
-const CANVAS_SIZE = 400;
+const CANVAS_SIZE = 500;
+const CANVAS_SIZE_NYAWA = 500;
+const CELL_SIZE_NYAWA = 20;
 const REDRAW_INTERVAL = 50;
 const WIDTH = CANVAS_SIZE / CELL_SIZE;
 const HEIGHT = CANVAS_SIZE / CELL_SIZE;
@@ -9,8 +11,7 @@ const DIRECTION = {
   UP: 2,
   DOWN: 3,
 };
-
-const MOVE_INTERVAL = 150;
+let MOVE_INTERVAL = 150;
 
 function initPosition() {
   return {
@@ -32,105 +33,151 @@ function initDirection() {
   return Math.floor(Math.random() * 4);
 }
 
-function initSnake(color) {
+function initSnake(sorce, bdn) {
   return {
-    color: color,
+    src: sorce,
     ...initHeadAndBody(),
     direction: initDirection(),
     score: 0,
+    badan: bdn,
+    nyawa1: 3,
+    level: 1,
   };
 }
-let snake1 = initSnake("purple");
+let snake1 = initSnake("assets/head-snake.jpg", "assets/body-snake.png");
 
 let apple = {
   color: "red",
   position: initPosition(),
 };
 
-let apple2 = {
+let app2 = {
   color: "red",
   position: initPosition(),
 };
 
+let nyawa = {
+  position: initPosition(),
+  status: false,
+};
+
+let balok = {
+  position: { x: 9, y: 10 },
+};
+
+// sound effect
+let soundGameOver = new Audio("assets/sounds_game-over.wav");
+let soundLevel = new Audio("assets/sounds_level.wav");
+
 function drawCell(ctx, x, y, color) {
   ctx.fillStyle = color;
   ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
-  ctx.strokeRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+}
+function drawUlar(ctx, x, y, sorce) {
+  const image = new Image();
+  image.src = sorce;
+  ctx.drawImage(image, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+}
+function drawlipe(ctx, x, y, stat) {
+  const image = new Image();
+  image.src = "assets/blood.png";
+  if (stat == true) {
+    ctx.drawImage(image, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+  }
 }
 
-function drawScore(snake) {
-  let scoreCanvas;
-  if (snake.color == snake1.color) {
-    scoreCanvas = document.getElementById("score1Board");
+function naiklevel(snake) {
+  if (snake.score % 5 == 0) {
+    MOVE_INTERVAL = MOVE_INTERVAL - 30;
+    snake.level = snake.level + 1;
+    alert("naik level " + snake.level);
+    soundLevel.play();
   }
+}
+function drawtembok(ctx, x, y) {
+  const image = new Image();
+  // const image1 = new Image()
+  image.src = "assets/block.png";
+  // let a = balok.position.x
+  for (let i = 0; i <= 5; i++) {
+    ctx.drawImage(
+      image,
+      (x + i) * CELL_SIZE,
+      y * CELL_SIZE,
+      CELL_SIZE,
+      CELL_SIZE
+    );
+  }
+}
 
+function drawNilai(snake) {
+  let scoreCanvas;
+  scoreCanvas = document.getElementById("score1Board");
   let scoreCtx = scoreCanvas.getContext("2d");
-
   scoreCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-  scoreCtx.font = "30px Arial";
-  scoreCtx.fillStyle = snake.color;
-  scoreCtx.fillText(snake.score, 25, 45);
+  scoreCtx.font = "40px Arial";
+  // scoreCtx.fillStyle = "red";
+  // scoreCtx.fillText("Level: " + snake.level, 10, 30);
+  scoreCtx.fillStyle = "black";
+  scoreCtx.fillText(snake.score, 30, scoreCanvas.scrollHeight / 1.5);
+}
+
+function drawDarah(snake) {
+  let life = document.getElementById("life");
+  const scoreCanvas = document.getElementById("nyawa1");
+  let scoreCtx = scoreCanvas.getContext("2d");
+  scoreCtx.clearRect(0, 0, CANVAS_SIZE_NYAWA, CELL_SIZE_NYAWA);
+  let lebar = 1;
+  let tinggi = 1;
+  let a = snake.nyawa1;
+  for (let i = 0; i < a; i++) {
+    scoreCtx.drawImage(life, lebar, tinggi, 20, 20);
+    lebar = lebar + 29;
+  }
 }
 
 function draw() {
   setInterval(function () {
     let snakeCanvas = document.getElementById("snakeBoard");
     let ctx = snakeCanvas.getContext("2d");
-
     ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-
-    drawCell(ctx, snake1.head.x, snake1.head.y, snake1.color);
-
+    drawUlar(ctx, snake1.head.x, snake1.head.y, snake1.src);
     for (let i = 1; i < snake1.body.length; i++) {
-      drawCell(ctx, snake1.body[i].x, snake1.body[i].y, snake1.color);
+      drawUlar(ctx, snake1.body[i].x, snake1.body[i].y, snake1.badan);
     }
 
-    drawScore(snake1);
+    // render level + speed to html page
+    let speedLevel = document.getElementById("speedNumber");
+    speedLevel.innerHTML = "Speed: " + MOVE_INTERVAL;
 
-    // custom head Snake
-    let imgHeadSnake = document.getElementById("headSnake");
+    let levelSnake = document.getElementById("levelNumber");
+    levelSnake.innerHTML = "Level: " + snake1.level;
+
+    let app = document.getElementById("apple");
     ctx.drawImage(
-      imgHeadSnake,
-      snake1.head.x * CELL_SIZE,
-      snake1.head.y * CELL_SIZE,
-      CELL_SIZE,
-      CELL_SIZE
-    );
-
-    // custom body Snake
-    let imgBodySnake = document.getElementById("bodySnake");
-    for (let i = 1; i < snake1.body.length; i++) {
-      ctx.drawImage(
-        imgBodySnake,
-        snake1.body[i].x * CELL_SIZE,
-        snake1.body[i].y * CELL_SIZE,
-        CELL_SIZE,
-        CELL_SIZE
-      );
-    }
-
-    // custom apple
-    let img = document.getElementById("apple");
-    drawCell(ctx, apple.position.x, apple.position.y, apple.color);
-
-    ctx.drawImage(
-      img,
+      app,
       apple.position.x * CELL_SIZE,
       apple.position.y * CELL_SIZE,
       CELL_SIZE,
       CELL_SIZE
     );
     ctx.drawImage(
-      img,
-      apple2.position.x * CELL_SIZE,
-      apple2.position.y * CELL_SIZE,
+      app,
+      app2.position.x * CELL_SIZE,
+      app2.position.y * CELL_SIZE,
       CELL_SIZE,
       CELL_SIZE
     );
+    drawtembok(ctx, balok.position.x, balok.position.y);
+    drawNilai(snake1);
+    drawDarah(snake1);
+    setInterval(function () {
+      drawlipe(ctx, nyawa.position.x, nyawa.position.y, nyawa.status);
+    }, 1000);
   }, REDRAW_INTERVAL);
 }
 
-function teleport(snake) {
+function pindah(snake) {
   if (snake.head.x < 0) {
     snake.head.x = CANVAS_SIZE / CELL_SIZE - 1;
   }
@@ -145,52 +192,102 @@ function teleport(snake) {
   }
 }
 
+function cekbalok(snake) {
+  for (let i = 0; i <= 5; i++) {
+    if (
+      snake.head.x == balok.position.x + i &&
+      snake.head.y == balok.position.y
+    ) {
+      for (let j = 1; j < snake.body.length; j++) {
+        snake.body.pop();
+        if (snake.body.length > 1) {
+          snake.body.pop();
+        }
+      }
+    }
+  }
+}
 function eat(snake, apple) {
+  cekbalok(snake);
   if (snake.head.x == apple.position.x && snake.head.y == apple.position.y) {
     apple.position = initPosition();
     snake.score++;
+    naiklevel(snake);
     snake.body.push({ x: snake.head.x, y: snake.head.y });
-  }
-}
-
-function eat(snake, apple2) {
-  if (snake.head.x == apple2.position.x && snake.head.y == apple2.position.y) {
-    apple2.position = initPosition();
+    if ((snake.score % 2 != 0 && snake.score > 1) || snake.score == 2) {
+      nyawa.status = true;
+      if (nyawa.status == true) {
+        setTimeout(function () {
+          cekbalok(snake);
+          nyawa.position = initPosition();
+          nyawa.status = false;
+        }, 3000);
+      }
+    } else {
+      setTimeout(function () {
+        nyawa.status = false;
+      });
+    }
+  } else if (
+    snake.head.x == nyawa.position.x &&
+    snake.head.y == nyawa.position.y &&
+    nyawa.status == true
+  ) {
+    nyawa.position = initPosition();
+    nyawa.status = false;
+    snake.nyawa1++;
+  } else if (
+    snake.head.x == app2.position.x &&
+    snake.head.y == app2.position.y
+  ) {
+    app2.position = initPosition();
     snake.score++;
+    naiklevel(snake);
     snake.body.push({ x: snake.head.x, y: snake.head.y });
+    if ((snake.score % 2 != 0 && snake.score > 1) || snake.score == 2) {
+      nyawa.status = true;
+      if (nyawa.status == true) {
+        setTimeout(function () {
+          nyawa.status = false;
+          nyawa.position = initPosition();
+          cekbalok(snake);
+        }, 3000);
+      }
+    } else {
+      setTimeout(function () {
+        nyawa.status = false;
+      });
+    }
   }
 }
 
 function moveLeft(snake) {
   snake.head.x--;
-  teleport(snake);
+  pindah(snake);
   eat(snake, apple);
-  eat(snake, apple2);
 }
 
 function moveRight(snake) {
   snake.head.x++;
-  teleport(snake);
+  pindah(snake);
   eat(snake, apple);
-  eat(snake, apple2);
 }
 
 function moveDown(snake) {
   snake.head.y++;
-  teleport(snake);
+  pindah(snake);
   eat(snake, apple);
-  eat(snake, apple2);
 }
 
 function moveUp(snake) {
   snake.head.y--;
-  teleport(snake);
+  pindah(snake);
   eat(snake, apple);
-  eat(snake, apple2);
 }
 
 function checkCollision(snakes) {
   let isCollide = false;
+  let isWin = false;
   for (let i = 0; i < snakes.length; i++) {
     for (let j = 0; j < snakes.length; j++) {
       for (let k = 1; k < snakes[j].body.length; k++) {
@@ -198,12 +295,47 @@ function checkCollision(snakes) {
           snakes[i].head.x == snakes[j].body[k].x &&
           snakes[i].head.y == snakes[j].body[k].y
         ) {
-          isCollide = true;
+          snakes[i].nyawa1--;
+          if (snakes[i].nyawa1 == 0) {
+            isCollide = true;
+          }
         }
       }
     }
   }
-  return isCollide;
+
+  for (let i = 0; i <= 5; i++) {
+    if (
+      snakes[0].head.x == balok.position.x + i &&
+      snakes[0].head.y == balok.position.y
+    ) {
+      cekbalok(snakes[0]);
+      snakes[0].nyawa1--;
+      snakes[0].head = initPosition();
+      if (snakes[0].nyawa1 == 0) {
+        isCollide = true;
+      }
+    }
+  }
+
+  // for (let i = 0; i < snakes.length; i++) {
+  //   if (snakes[i].level == 5) {
+  //     isWin = true;
+  //     MOVE_INTERVAL = 100;
+  //   }
+  // }
+
+  if (isCollide) {
+    alert("Game over");
+    soundGameOver.play();
+    snake1 = initSnake("assets/head-snake.jpg", "assets/body-snake.png");
+    MOVE_INTERVAL = 150;
+    return isCollide;
+  } else if (isWin) {
+    alert("Selamat Anda Menang");
+    snake1 = initSnake("assets/head-snake.jpg", "assets/body-snake.png");
+    return isWin;
+  }
 }
 
 function move(snake) {
@@ -227,13 +359,8 @@ function move(snake) {
       move(snake);
     }, MOVE_INTERVAL);
   } else {
-    console.log("collide", snake.color);
-    if (snake == snake1) {
-      snake1 = initSnake("purple");
-      setTimeout(function () {
-        move(snake1);
-      }, MOVE_INTERVAL);
-    }
+    balok.position = initPosition();
+    initGame();
   }
 }
 
@@ -264,16 +391,6 @@ document.addEventListener("keydown", function (event) {
     turn(snake1, DIRECTION.UP);
   } else if (event.key === "ArrowDown") {
     turn(snake1, DIRECTION.DOWN);
-  }
-
-  if (event.key === "a") {
-    turn(snake2, DIRECTION.LEFT);
-  } else if (event.key === "d") {
-    turn(snake2, DIRECTION.RIGHT);
-  } else if (event.key === "w") {
-    turn(snake2, DIRECTION.UP);
-  } else if (event.key === "s") {
-    turn(snake2, DIRECTION.DOWN);
   }
 });
 
