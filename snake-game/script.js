@@ -266,15 +266,6 @@ document.addEventListener("keydown", function (event) {
     turn(snake1, DIRECTION.DOWN);
   }
 
-  if (event.key === "a") {
-    turn(snake2, DIRECTION.LEFT);
-  } else if (event.key === "d") {
-    turn(snake2, DIRECTION.RIGHT);
-  } else if (event.key === "w") {
-    turn(snake2, DIRECTION.UP);
-  } else if (event.key === "s") {
-    turn(snake2, DIRECTION.DOWN);
-  }
 });
 
 function initGame() {
