@@ -20,6 +20,13 @@ function initPosition() {
   };
 }
 
+function initBalok() {
+  return {
+    x: 7,
+    y: 5,
+  };
+}
+
 function initHeadAndBody() {
   let head = initPosition();
   let body = [{ x: head.x, y: head.y }];
@@ -44,14 +51,15 @@ function initSnake(sorce, bdn) {
     level: 1,
   };
 }
-let snake1 = initSnake("assets/head-snake.jpg", "assets/body-snake.png");
+
+let snake1 = initSnake("assets/head-snake.png", "assets/body-snake.png");
 
 let apple = {
   color: "red",
   position: initPosition(),
 };
 
-let app2 = {
+let apple2 = {
   color: "red",
   position: initPosition(),
 };
@@ -62,44 +70,79 @@ let nyawa = {
 };
 
 let balok = {
-  position: { x: 9, y: 10 },
+  position: { x: 7, y: 5 },
+};
+
+let balok2 = {
+  position: { x: 13, y: 5 },
+};
+
+let balok3 = {
+  position: { x: 18, y: 5 },
+};
+
+let balok4 = {
+  position: { x: 6, y: 6 },
+};
+
+let balok5 = {
+  position: { x: 6, y: 15 },
 };
 
 // sound effect
-let soundGameOver = new Audio("assets/sounds_game-over.wav");
-let soundLevel = new Audio("assets/sounds_level.wav");
+const soundGameOver = new Audio("assets/sounds_game-over.wav");
+const soundLevel = new Audio("assets/sounds_level.wav");
 
 function drawCell(ctx, x, y, color) {
   ctx.fillStyle = color;
   ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
 }
+
 function drawUlar(ctx, x, y, sorce) {
   const image = new Image();
   image.src = sorce;
   ctx.drawImage(image, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
 }
-function drawlipe(ctx, x, y, stat) {
+
+function drawLipe(ctx, x, y, stat) {
   const image = new Image();
-  image.src = "assets/blood.png";
+  image.src = "assets/heart.png";
   if (stat == true) {
     ctx.drawImage(image, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
   }
 }
 
-function naiklevel(snake) {
+function naikLevel(snake) {
   if (snake.score % 5 == 0) {
-    MOVE_INTERVAL = MOVE_INTERVAL - 30;
+    MOVE_INTERVAL = MOVE_INTERVAL - 20;
     snake.level = snake.level + 1;
-    alert("naik level " + snake.level);
+    alert("Naik Level " + snake.level);
     soundLevel.play();
   }
 }
-function drawtembok(ctx, x, y) {
+
+function drawTembok(ctx, x, y) {
   const image = new Image();
   // const image1 = new Image()
   image.src = "assets/block.png";
   // let a = balok.position.x
-  for (let i = 0; i <= 5; i++) {
+  for (let i = 0; i <= 12; i++) {
+    ctx.drawImage(
+      image,
+      x * CELL_SIZE,
+      (y + i) * CELL_SIZE,
+      CELL_SIZE,
+      CELL_SIZE
+    );
+  }
+}
+
+function drawTembokHorizontal(ctx, x, y) {
+  const image = new Image();
+  // const image1 = new Image()
+  image.src = "assets/block.png";
+  // let a = balok.position.x
+  for (let i = 0; i <= 12; i++) {
     ctx.drawImage(
       image,
       (x + i) * CELL_SIZE,
@@ -116,8 +159,6 @@ function drawNilai(snake) {
   let scoreCtx = scoreCanvas.getContext("2d");
   scoreCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
   scoreCtx.font = "40px Arial";
-  // scoreCtx.fillStyle = "red";
-  // scoreCtx.fillText("Level: " + snake.level, 10, 30);
   scoreCtx.fillStyle = "black";
   scoreCtx.fillText(snake.score, 30, scoreCanvas.scrollHeight / 1.5);
 }
@@ -140,8 +181,11 @@ function draw() {
   setInterval(function () {
     let snakeCanvas = document.getElementById("snakeBoard");
     let ctx = snakeCanvas.getContext("2d");
+
     ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+
     drawUlar(ctx, snake1.head.x, snake1.head.y, snake1.src);
+
     for (let i = 1; i < snake1.body.length; i++) {
       drawUlar(ctx, snake1.body[i].x, snake1.body[i].y, snake1.badan);
     }
@@ -161,18 +205,35 @@ function draw() {
       CELL_SIZE,
       CELL_SIZE
     );
+
     ctx.drawImage(
       app,
-      app2.position.x * CELL_SIZE,
-      app2.position.y * CELL_SIZE,
+      apple2.position.x * CELL_SIZE,
+      apple2.position.y * CELL_SIZE,
       CELL_SIZE,
       CELL_SIZE
     );
-    drawtembok(ctx, balok.position.x, balok.position.y);
+
+    // tambah tembok saat naik level
+    if (snake1.level == 2) {
+      drawTembok(ctx, balok.position.x, balok.position.y);
+    } else if (snake1.level == 3) {
+      drawTembok(ctx, balok.position.x, balok.position.y);
+      drawTembok(ctx, balok2.position.x, balok2.position.y);
+    } else if (snake1.level == 4) {
+      drawTembok(ctx, balok.position.x, balok.position.y);
+      drawTembok(ctx, balok2.position.x, balok2.position.y);
+      drawTembok(ctx, balok3.position.x, balok3.position.y);
+    } else if (snake1.level == 5) {
+      drawTembokHorizontal(ctx, balok4.position.x, balok4.position.y);
+      drawTembokHorizontal(ctx, balok5.position.x, balok5.position.y);
+    }
+
     drawNilai(snake1);
     drawDarah(snake1);
+
     setInterval(function () {
-      drawlipe(ctx, nyawa.position.x, nyawa.position.y, nyawa.status);
+      drawLipe(ctx, nyawa.position.x, nyawa.position.y, nyawa.status);
     }, 1000);
   }, REDRAW_INTERVAL);
 }
@@ -192,33 +253,80 @@ function pindah(snake) {
   }
 }
 
-function cekbalok(snake) {
-  for (let i = 0; i <= 5; i++) {
-    if (
-      snake.head.x == balok.position.x + i &&
-      snake.head.y == balok.position.y
-    ) {
-      for (let j = 1; j < snake.body.length; j++) {
-        snake.body.pop();
-        if (snake.body.length > 1) {
+function cekBalok(snake) {
+  for (let i = 0; i <= 12; i++) {
+    if (snake.level == 2) {
+      if (
+        snake.head.x == balok.position.x &&
+        snake.head.y == balok.position.y + i
+      ) {
+        for (let j = 1; j < snake.body.length; j++) {
           snake.body.pop();
+          if (snake.body.length > 1) {
+            snake.body.pop();
+          }
+        }
+      }
+    } else if (snake.level == 3) {
+      if (
+        (snake.head.x == balok.position.x &&
+          snake.head.y == balok.position.y + i) ||
+        (snake.head.x == balok2.position.x &&
+          snake.head.y == balok2.position.y + i)
+      ) {
+        for (let j = 1; j < snake.body.length; j++) {
+          snake.body.pop();
+          if (snake.body.length > 1) {
+            snake.body.pop();
+          }
+        }
+      }
+    } else if (snake.level == 4) {
+      if (
+        (snake.head.x == balok.position.x &&
+          snake.head.y == balok.position.y + i) ||
+        (snake.head.x == balok2.position.x &&
+          snake.head.y == balok2.position.y + i) ||
+        (snake.head.x == balok3.position.x &&
+          snake.head.y == balok3.position.y + i)
+      ) {
+        for (let j = 1; j < snake.body.length; j++) {
+          snake.body.pop();
+          if (snake.body.length > 1) {
+            snake.body.pop();
+          }
+        }
+      }
+    } else if (snake.level == 5) {
+      if (
+        (snake.head.x == balok4.position.x + i &&
+          snake.head.y == balok4.position.y) ||
+        (snake.head.x == balok5.position.x + i &&
+          snake.head.y == balok5.position.y)
+      ) {
+        for (let j = 1; j < snake.body.length; j++) {
+          snake.body.pop();
+          if (snake.body.length > 1) {
+            snake.body.pop();
+          }
         }
       }
     }
   }
 }
+
 function eat(snake, apple) {
-  cekbalok(snake);
+  cekBalok(snake);
   if (snake.head.x == apple.position.x && snake.head.y == apple.position.y) {
     apple.position = initPosition();
     snake.score++;
-    naiklevel(snake);
+    naikLevel(snake);
     snake.body.push({ x: snake.head.x, y: snake.head.y });
     if ((snake.score % 2 != 0 && snake.score > 1) || snake.score == 2) {
       nyawa.status = true;
       if (nyawa.status == true) {
         setTimeout(function () {
-          cekbalok(snake);
+          cekBalok(snake);
           nyawa.position = initPosition();
           nyawa.status = false;
         }, 3000);
@@ -237,12 +345,12 @@ function eat(snake, apple) {
     nyawa.status = false;
     snake.nyawa1++;
   } else if (
-    snake.head.x == app2.position.x &&
-    snake.head.y == app2.position.y
+    snake.head.x == apple2.position.x &&
+    snake.head.y == apple2.position.y
   ) {
-    app2.position = initPosition();
+    apple2.position = initPosition();
     snake.score++;
-    naiklevel(snake);
+    naikLevel(snake);
     snake.body.push({ x: snake.head.x, y: snake.head.y });
     if ((snake.score % 2 != 0 && snake.score > 1) || snake.score == 2) {
       nyawa.status = true;
@@ -250,7 +358,7 @@ function eat(snake, apple) {
         setTimeout(function () {
           nyawa.status = false;
           nyawa.position = initPosition();
-          cekbalok(snake);
+          cekBalok(snake);
         }, 3000);
       }
     } else {
@@ -304,36 +412,75 @@ function checkCollision(snakes) {
     }
   }
 
-  for (let i = 0; i <= 5; i++) {
-    if (
-      snakes[0].head.x == balok.position.x + i &&
-      snakes[0].head.y == balok.position.y
-    ) {
-      cekbalok(snakes[0]);
-      snakes[0].nyawa1--;
-      snakes[0].head = initPosition();
-      if (snakes[0].nyawa1 == 0) {
-        isCollide = true;
+  for (let i = 0; i <= 12; i++) {
+    if (snakes[0].level == 2) {
+      if (
+        snakes[0].head.x == balok.position.x &&
+        snakes[0].head.y == balok.position.y + i
+      ) {
+        cekBalok(snakes[0]);
+        snakes[0].nyawa1--;
+        snakes[0].head = initPosition();
+        if (snakes[0].nyawa1 == 0) {
+          isCollide = true;
+        }
+      }
+    } else if (snakes[0].level == 3) {
+      if (
+        (snakes[0].head.x == balok.position.x &&
+          snakes[0].head.y == balok.position.y + i) ||
+        (snakes[0].head.x == balok2.position.x &&
+          snakes[0].head.y == balok2.position.y + i)
+      ) {
+        cekBalok(snakes[0]);
+        snakes[0].nyawa1--;
+        snakes[0].head = initPosition();
+        if (snakes[0].nyawa1 == 0) {
+          isCollide = true;
+        }
+      }
+    } else if (snakes[0].level == 4) {
+      if (
+        (snakes[0].head.x == balok.position.x &&
+          snakes[0].head.y == balok.position.y + i) ||
+        (snakes[0].head.x == balok2.position.x &&
+          snakes[0].head.y == balok2.position.y + i) ||
+        (snakes[0].head.x == balok3.position.x &&
+          snakes[0].head.y == balok3.position.y + i)
+      ) {
+        cekBalok(snakes[0]);
+        snakes[0].nyawa1--;
+        snakes[0].head = initPosition();
+        if (snakes[0].nyawa1 == 0) {
+          isCollide = true;
+        }
+      }
+    } else if (snakes[0].level == 5) {
+      if (
+        (snakes[0].head.x == balok4.position.x + i &&
+          snakes[0].head.y == balok4.position.y) ||
+        (snakes[0].head.x == balok5.position.x + i &&
+          snakes[0].head.y == balok5.position.y)
+      ) {
+        cekBalok(snakes[0]);
+        snakes[0].nyawa1--;
+        snakes[0].head = initPosition();
+        if (snakes[0].nyawa1 == 0) {
+          isCollide = true;
+        }
       }
     }
   }
 
-  // for (let i = 0; i < snakes.length; i++) {
-  //   if (snakes[i].level == 5) {
-  //     isWin = true;
-  //     MOVE_INTERVAL = 100;
-  //   }
-  // }
-
   if (isCollide) {
     alert("Game over");
     soundGameOver.play();
-    snake1 = initSnake("assets/head-snake.jpg", "assets/body-snake.png");
+    snake1 = initSnake("assets/head-snake.png", "assets/body-snake.png");
     MOVE_INTERVAL = 150;
     return isCollide;
   } else if (isWin) {
     alert("Selamat Anda Menang");
-    snake1 = initSnake("assets/head-snake.jpg", "assets/body-snake.png");
+    snake1 = initSnake("assets/head-snake.png", "assets/body-snake.png");
     return isWin;
   }
 }
@@ -359,7 +506,7 @@ function move(snake) {
       move(snake);
     }, MOVE_INTERVAL);
   } else {
-    balok.position = initPosition();
+    balok.position = initBalok();
     initGame();
   }
 }
